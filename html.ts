@@ -8,9 +8,9 @@ type HtmlAttribute = {}
 
 const div = (attrs: HtmlAttribute[], children: Html[]): Html => {
   return {
-    tag: "div",
+    tag: 'div',
     children: children,
-    attributes: attrs,
+    attributes: attrs
   }
 }
 export { Html, div }

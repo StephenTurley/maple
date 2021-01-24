@@ -1,4 +1,5 @@
-import { Html } from "./html"
+import { Html } from './html'
+import render from './render'
 
 interface Sandbox<model, msg> {
   init: () => model
@@ -6,4 +7,13 @@ interface Sandbox<model, msg> {
   view: (model) => Html
 }
 
-export { Sandbox }
+function sandbox<model, msg>(sandbox: Sandbox<model, msg>) {
+  return {
+    init: (root: HTMLElement) => {
+      const model = sandbox.init()
+      render(root, sandbox.view(model))
+    }
+  }
+}
+
+export { sandbox }
