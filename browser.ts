@@ -1,14 +1,17 @@
 import { Html } from './html'
 import render from './render'
 
-interface Sandbox<model, msg> {
+type Sandbox<model, msg> = {
   init: () => model
   update: (model, msg) => model
   view: (model) => Html
 }
+declare var Maple: {
+  init: (HTMLElement) => void
+}
 
 function sandbox<model, msg>(sandbox: Sandbox<model, msg>) {
-  return {
+  Maple = {
     init: (root: HTMLElement) => {
       const model = sandbox.init()
       render(root, sandbox.view(model))
@@ -16,4 +19,4 @@ function sandbox<model, msg>(sandbox: Sandbox<model, msg>) {
   }
 }
 
-export { sandbox }
+export { Sandbox, sandbox }
