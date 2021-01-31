@@ -1,4 +1,4 @@
-import { Html, div } from './html'
+import { Html, div, text } from './html'
 import render from './render'
 
 describe('render', () => {
@@ -18,5 +18,14 @@ describe('render', () => {
     const result = render(given, html)
 
     expect(given.children[0].children.length).toEqual(3)
+  })
+
+  it('renders text', () => {
+    const given = document.createElement('div')
+    const html = div([], [text('flerpn')])
+
+    const result = render(given, html)
+
+    expect(given.children[0].textContent).toEqual('flerpn')
   })
 })
