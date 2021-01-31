@@ -1,15 +1,18 @@
 import { Html, TextNode, Node } from './html'
 
+function renderNode(child: Node): HTMLElement {
+  const el = document.createElement(child.tag)
+  child.children.forEach((grandChild) => {
+    render(el, grandChild)
+  })
+  return el
+}
+
 export default function render(root: HTMLElement, child: Html): HTMLElement {
   if (child.tag === 'text') {
-    root.textContent = (child as TextNode).value
+    root.textContent = child.value
     return root
   } else {
-    const node = child as Node
-    const el = document.createElement(node.tag)
-    node.children.forEach((grandChild) => {
-      render(el, grandChild)
-    })
-    return root.appendChild(el)
+    return root.appendChild(renderNode(child))
   }
 }
