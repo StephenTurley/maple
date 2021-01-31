@@ -9,7 +9,7 @@ function renderNode(child: Node): HTMLElement {
 }
 
 export default function render(root: HTMLElement, child: Html): HTMLElement {
-  if (child.tag === 'text') {
+  if (child.type === 'text') {
     root.textContent = child.value
     return root
   } else {
