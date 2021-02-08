@@ -1,3 +1,6 @@
+import { HtmlAttribute } from './html/attributes'
+import * as _ from 'lodash'
+
 type Html = Node | TextNode
 
 type Node = {
@@ -12,15 +15,6 @@ type TextNode = {
   value: string
 }
 
-type HtmlAttribute = {}
-
-const text = (value: string): Html => ({ type: 'text', value: value })
-const div = (attrs: HtmlAttribute[], children: Html[]) =>
-  node('div', attrs, children)
-
-const p = (attrs: HtmlAttribute[], children: Html[]) =>
-  node('p', attrs, children)
-
 const node = (tag: string, attrs: HtmlAttribute[], children: Html[]): Node => {
   return {
     type: 'html',
@@ -29,4 +23,10 @@ const node = (tag: string, attrs: HtmlAttribute[], children: Html[]): Node => {
     attributes: attrs
   }
 }
-export { Html, TextNode, Node, div, p, text }
+
+export const button = _.partial(node, 'button')
+export const div = _.partial(node, 'div')
+export const p = _.partial(node, 'p')
+export const text = (value: string): Html => ({ type: 'text', value: value })
+
+export { Html, TextNode, Node }

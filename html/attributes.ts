@@ -1,0 +1,3 @@
+type HtmlAttribute = {}
+
+export { HtmlAttribute }
