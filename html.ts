@@ -27,6 +27,7 @@ const node = (tag: string, attrs: HtmlAttribute[], children: Html[]): Node => {
 export const button = _.partial(node, 'button')
 export const div = _.partial(node, 'div')
 export const p = _.partial(node, 'p')
+export const span = _.partial(node, 'span')
 export const text = (value: string): Html => ({ type: 'text', value: value })
 
 export { Html, TextNode, Node }

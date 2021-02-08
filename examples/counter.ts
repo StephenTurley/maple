@@ -1,5 +1,5 @@
 import { Sandbox, sandbox } from '../browser'
-import { div, p, text } from '../html'
+import { button, div, p, span, text } from '../html'
 
 type Msg = 'increment'
 type Model = number
@@ -10,7 +10,13 @@ const app: Sandbox<Model, Msg> = {
   view: (model) =>
     div(
       [],
-      [p([], [text('flerpn')]), p([], [text('derpn')]), p([], [text('workn')])]
+      [
+        div([], [p([], [text('Count: '), span([], [text(model.toString())])])]),
+        div(
+          [],
+          [button([], [text('Decrement')]), button([], [text('Increment')])]
+        )
+      ]
     )
 }
 
