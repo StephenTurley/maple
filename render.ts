@@ -2,6 +2,7 @@ import { Html, TextNode, Node } from './html'
 
 function renderNode(child: Node): HTMLElement {
   const el = document.createElement(child.tag)
+  child.attributes.forEach((attr) => el.setAttribute(attr.name, attr.value))
   child.children.forEach((grandChild) => {
     render(el, grandChild)
   })
