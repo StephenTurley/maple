@@ -1,4 +1,4 @@
-import { Sandbox, sandbox } from '../browser'
+import { sandbox } from '../browser'
 import { Html, button, div, h1, p, span, text } from '../html'
 import { classNames, onClick } from '../html/attributes'
 
