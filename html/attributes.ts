@@ -1,12 +1,23 @@
-type HtmlAttribute = {
-  name: string
+type HtmlAttribute<msg> = TextAttribute | MessageAttribute<msg>
+
+type TextAttribute = {
+  name: 'class'
   value: string
 }
 
-export const attr = (name: string, value: string) => ({ name, value })
-export const classNames = (...classNames: string[]) => ({
+type MessageAttribute<msg> = {
+  name: 'onClick'
+  message: msg
+}
+
+const classNames = (...classNames: string[]): TextAttribute => ({
   name: 'class',
   value: classNames.join(' ')
 })
 
-export { HtmlAttribute }
+const onClick = <msg>(message: msg): MessageAttribute<msg> => ({
+  name: 'onClick',
+  message
+})
+
+export { classNames, onClick, HtmlAttribute }
