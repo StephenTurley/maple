@@ -1,6 +1,7 @@
 import { sandbox } from '../browser'
 import { Html, button, div, h1, p, span, text } from '../html'
-import { classNames, onClick } from '../html/attributes'
+import { classNames } from '../html/attributes'
+import { onClick } from '../html/events'
 
 type Msg = 'increment' | 'decrement'
 type Model = number

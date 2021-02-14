@@ -1,23 +1,15 @@
-type HtmlAttribute<msg> = TextAttribute | MessageAttribute<msg>
+import { Event } from './events'
 
-type TextAttribute = {
-  name: 'class'
-  value: string
-}
+type Attribute<msg> =
+  | {
+      name: 'class'
+      value: string
+    }
+  | Event<msg>
 
-type MessageAttribute<msg> = {
-  name: 'onClick'
-  message: msg
-}
-
-const classNames = (...classNames: string[]): TextAttribute => ({
+const classNames = <msg>(...classNames: string[]): Attribute<msg> => ({
   name: 'class',
   value: classNames.join(' ')
 })
 
-const onClick = <msg>(message: msg): MessageAttribute<msg> => ({
-  name: 'onClick',
-  message
-})
-
-export { classNames, onClick, HtmlAttribute }
+export { classNames, Attribute }
