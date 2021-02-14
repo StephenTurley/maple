@@ -4,7 +4,7 @@ import _ from 'lodash'
 
 type Sandbox<model, msg> = {
   init: () => model
-  update: (model: model, msg: msg) => model
+  update: (msg: msg, model: model) => model
   view: (model: model) => Html<msg>
 }
 
@@ -27,7 +27,7 @@ function sandbox<model, msg>(s: Sandbox<model, msg>) {
 
       const updater = (model: model, message: msg) => {
         root.innerHTML = ''
-        const updated = s.update(model, message)
+        const updated = s.update(message, model)
         renderModel(updated)
       }
 

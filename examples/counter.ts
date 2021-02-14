@@ -7,7 +7,7 @@ type Model = number
 
 const init = () => 0
 
-const update = (model: Model, msg: Msg) => {
+const update = (msg: Msg, model: Model) => {
   switch (msg) {
     case 'increment':
       return model + 1
