@@ -1,4 +1,5 @@
 import { Html } from './html'
+import { Cmd } from './command'
 import render from './render'
 import _ from 'lodash'
 
@@ -8,14 +9,13 @@ type Sandbox<model, msg> = {
   update: (msg: msg, model: model) => model
 }
 
-type Cmd<msg> = { msg: msg }
 type Sub<msg> = { msg: msg }
 
 type Element<model, msg> = {
   init: (flags: any) => [model, Cmd<msg>]
   view: (model: model) => Html<msg>
   update: (msg: msg, model: model) => [model, Cmd<msg>]
-  subscriptions: (model: model) => Sub<msg>
+  // subscriptions: (model: model) => Sub<msg>
 }
 
 interface Program {
@@ -61,4 +61,4 @@ function sandbox<model, msg>(p: Sandbox<model, msg>) {
   }
 }
 
-export { Sandbox, sandbox }
+export { Sandbox, Element, sandbox, element }

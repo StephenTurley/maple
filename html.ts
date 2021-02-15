@@ -1,4 +1,4 @@
-import { HtmlAttribute } from './html/attributes'
+import { Attribute } from './html/attributes'
 import * as _ from 'lodash'
 
 type Html<msg> = Node<msg> | TextNode
@@ -7,7 +7,7 @@ type Node<msg> = {
   type: 'html'
   tag: string
   children: Html<msg>[]
-  attributes: HtmlAttribute<msg>[]
+  attributes: Attribute<msg>[]
 }
 
 type TextNode = {
@@ -17,7 +17,7 @@ type TextNode = {
 
 const node = <msg>(
   tag: string,
-  attrs: HtmlAttribute<msg>[],
+  attrs: Attribute<msg>[],
   children: Html<msg>[]
 ): Node<msg> => {
   return {
@@ -28,10 +28,7 @@ const node = <msg>(
   }
 }
 
-type Tag = <msg>(
-  attrs: HtmlAttribute<msg>[],
-  children: Html<msg>[]
-) => Html<msg>
+type Tag = <msg>(attrs: Attribute<msg>[], children: Html<msg>[]) => Html<msg>
 
 export const button: Tag = _.partial(node, 'button')
 export const div: Tag = _.partial(node, 'div')
