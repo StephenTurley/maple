@@ -39,6 +39,9 @@ export const h4: Tag = _.partial(node, 'h4')
 export const h5: Tag = _.partial(node, 'h5')
 export const h6: Tag = _.partial(node, 'h6')
 export const p: Tag = _.partial(node, 'p')
+export const ul: Tag = _.partial(node, 'ul')
+export const ol: Tag = _.partial(node, 'ol')
+export const li: Tag = _.partial(node, 'li')
 export const span: Tag = _.partial(node, 'span')
 export const text = <msg>(value: string): Html<msg> => ({
   type: 'text',
