@@ -3,7 +3,6 @@ import { Cmd, None } from '../command'
 import { div, h1, li, text, ul, Html } from '../html'
 import { onClick } from '../html/events'
 import { classNames } from '../html/attributes'
-import _ from 'lodash'
 
 type Msg = { type: 'toggle'; id: number }
 
@@ -28,7 +27,7 @@ const init = (): [Model, Cmd<Msg>] => {
 const update = (msg: Msg, model: Model): [Model, Cmd<Msg>] => {
   switch (msg.type) {
     case 'toggle':
-      const todos = _.map(model.todos, (todo) => {
+      const todos = model.todos.map((todo) => {
         if (todo.id === msg.id) {
           return { ...todo, complete: !todo.complete }
         }
