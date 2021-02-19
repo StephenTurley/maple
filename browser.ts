@@ -24,7 +24,7 @@ interface Program {
 
 declare global {
   interface Window {
-    Maple: Program
+    Willow: Program
   }
 }
 const renderModel = <model, msg>(
@@ -46,7 +46,7 @@ const renderModel = <model, msg>(
 }
 
 function element<model, msg>(p: Element<model, msg>) {
-  window.Maple = {
+  window.Willow = {
     init: (root: HTMLElement, flags?: any) => {
       renderModel(root, p, p.init(flags)[0])
     }
@@ -54,7 +54,7 @@ function element<model, msg>(p: Element<model, msg>) {
 }
 
 function sandbox<model, msg>(p: Sandbox<model, msg>) {
-  window.Maple = {
+  window.Willow = {
     init: (root: HTMLElement) => {
       renderModel(root, p, p.init())
     }
