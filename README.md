@@ -1,1 +1,1 @@
-# Willow, it's a weeping Elm
+# Willow, it's like an Elm that's weeping
