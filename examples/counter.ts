@@ -21,7 +21,7 @@ const view = (model: Model): Html<Msg> =>
   div(
     [classNames('container')],
     [
-      h1([], [text('Count stuff with Maple!')]),
+      h1([], [text('Count stuff with Willow!')]),
       div([], [p([], [text('Count: '), span([], [text(model.toString())])])]),
       div(
         [],

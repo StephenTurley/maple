@@ -18,7 +18,7 @@ type Model = {
 
 const init = (): [Model, Cmd<Msg>] => {
   const todos: Todo[] = [
-    { id: 1, title: 'Create Maple', complete: false },
+    { id: 1, title: 'Create Willow', complete: false },
     { id: 2, title: 'Tell folks to use Elm instead', complete: false }
   ]
   return [{ todos: todos }, None]
