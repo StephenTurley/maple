@@ -1,6 +1,6 @@
 import { Html, TextNode, Node } from './html'
 
-function renderNode<model, msg>(
+function renderNode<msg>(
   child: Node<msg>,
   emitter: (message: msg) => void
 ): HTMLElement {
@@ -21,7 +21,7 @@ function renderNode<model, msg>(
   return el
 }
 
-export default function render<model, msg>(
+export default function render<msg>(
   root: HTMLElement,
   child: Html<msg>,
   emitter: (message: msg) => void

@@ -18,37 +18,59 @@ type Element<model, msg> = {
   // subscriptions: (model: model) => Sub<msg>
 }
 
-interface Program {
-  init: (root: HTMLElement, flags?: any) => void
-}
-
 declare global {
   interface Window {
-    Willow: Program
+    Willow: {
+      init: (root: HTMLElement, flags?: any) => void
+    }
   }
 }
-const renderModel = <model, msg>(
+
+type Program<model, msg> = Element<model, msg> | Sandbox<model, msg>
+
+function* stateGenerator<model, msg>(
+  update: (msg: msg, model: model) => model,
+  initial: model
+) {
+  let current: model = initial
+
+  while (true) {
+    yield (current = update(yield, current))
+  }
+}
+
+const start = <model, msg>(
   root: HTMLElement,
-  p: Element<model, msg> | Sandbox<model, msg>,
-  model: model
+  init: model,
+  update: (msg: msg, model: model) => model,
+  view: (model: model) => Html<msg>
 ) => {
-  const renderOnUpdate = (model: model, message: msg) => {
-    const updated = p.update(message, model)
-    if (updated instanceof Array) {
-      renderModel(root, p, updated[0])
-    } else {
-      renderModel(root, p, updated)
+  const state = stateGenerator(update, init)
+  state.next()
+
+  const onUpdate = (msg: msg) => {
+    root.innerHTML = ''
+    const model = state.next(msg).value
+    state.next()
+    if (model !== undefined) {
+      render(root, view(model), onUpdate)
     }
   }
 
   root.innerHTML = ''
-  render(root, p.view(model), _.partial(renderOnUpdate, model))
+  render(root, view(init), onUpdate)
 }
 
 function element<model, msg>(p: Element<model, msg>) {
   window.Willow = {
     init: (root: HTMLElement, flags?: any) => {
-      renderModel(root, p, p.init(flags)[0])
+      const init = p.init(flags)[0]
+
+      const updateModel = (msg: msg, model: model): model => {
+        return p.update(msg, model)[0]
+      }
+
+      start(root, init, updateModel, p.view)
     }
   }
 }
@@ -56,7 +78,7 @@ function element<model, msg>(p: Element<model, msg>) {
 function sandbox<model, msg>(p: Sandbox<model, msg>) {
   window.Willow = {
     init: (root: HTMLElement) => {
-      renderModel(root, p, p.init())
+      start(root, p.init(), p.update, p.view)
     }
   }
 }
