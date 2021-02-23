@@ -46,12 +46,11 @@ const start = <model, msg>(
   view: (model: model) => Html<msg>
 ) => {
   const state = stateGenerator(update, init)
-  state.next()
 
   const onUpdate = (msg: msg) => {
     root.innerHTML = ''
-    const model = state.next(msg).value
     state.next()
+    const model = state.next(msg).value
     if (model !== undefined) {
       render(root, view(model), onUpdate)
     }
