@@ -1,5 +1,15 @@
-const None = { type: 'none' }
+type None = { type: 'none' }
+type HttpCommand<msg> = { type: 'http'; method: string; url: string; msg: msg }
 
-type Cmd<msg> = typeof None
+type Cmd<msg> = None | HttpCommand<msg>
 
-export { Cmd, None }
+const none: None = { type: 'none' }
+
+const get = <msg>(url: string, msg: msg): HttpCommand<msg> => ({
+  type: 'http',
+  method: 'GET',
+  url,
+  msg
+})
+
+export { Cmd, None, HttpCommand, none, get }
