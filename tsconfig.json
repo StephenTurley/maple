@@ -8,5 +8,5 @@
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "node"
   },
-  "include": [ "./jest-setup.ts" ]
+  "include": ["./jest-setup.ts"]
 }
