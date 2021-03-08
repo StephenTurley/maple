@@ -1,7 +1,7 @@
 import { Html } from './html'
 import { Cmd } from './command'
 import render from './render'
-import _ from 'lodash'
+import * as _ from 'lodash'
 
 type Sandbox<model, msg> = {
   init: () => model
@@ -52,6 +52,7 @@ const start = <model, msg>(
     state.next()
     const model = state.next(msg).value
     if (model !== undefined) {
+      // Todo figure out why model can be void
       render(root, view(model), onUpdate)
     }
   }

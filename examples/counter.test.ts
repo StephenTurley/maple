@@ -1,29 +1,21 @@
 import './counter'
 import { screen, fireEvent } from '@testing-library/dom'
+import { render } from '../test-helper'
 
-describe('counter', () =>{
-  beforeEach(() =>{
-    document.body.innerHTML = `
-      <div class="counter"></div>
-    `
-    const el: HTMLElement | null = document.querySelector('.counter')
-
-    if(el) {
-      window.Willow.init(el)
-    }else {
-      fail('did not render')
-    }
-  })
+describe('counter', () => {
+  beforeEach(() => render(window.Willow.init))
 
   it('should have a heading', () => {
-    screen.getByRole('heading')
+    expect(screen.getByRole('heading')).toHaveTextContent(
+      'Count stuff with Willow!'
+    )
   })
 
   it('should initialize with a count of 0', () => {
     screen.getByText('0')
   })
 
-  it('should increment',() => {
+  it('should increment', () => {
     const increment = screen.getByRole('button', { name: 'Increment' })
 
     fireEvent.click(increment)
@@ -31,7 +23,7 @@ describe('counter', () =>{
     screen.getByText('1')
   })
 
-  it('should decrement',() => {
+  it('should decrement', () => {
     const decrement = screen.getByRole('button', { name: 'Decrement' })
 
     fireEvent.click(decrement)
@@ -39,7 +31,7 @@ describe('counter', () =>{
     screen.getByText('-1')
   })
 
-  it('increment and decrement over 0',() => {
+  it('increment and decrement over 0', () => {
     const decrement = screen.getByRole('button', { name: 'Decrement' })
     const increment = screen.getByRole('button', { name: 'Increment' })
 

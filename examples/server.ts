@@ -3,10 +3,9 @@ import express from 'express'
 const app = express()
 const port = 8888
 
-app.get('/', (req, res) => {
-  res.send('Hello World')
-})
-
-app.listen(port, () => {
-  console.log(`Example server listening at: http://localhost:${port}`)
+app.get('/todos', (req, res) => {
+  return res.json([
+    { id: 1, title: 'Create Willow', complete: false },
+    { id: 2, title: 'Tell folks to use Elm instead', complete: false }
+  ])
 })

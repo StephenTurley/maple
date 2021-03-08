@@ -24,6 +24,7 @@
   "homepage": "https://github.com/StephenTurley/maple#readme",
   "devDependencies": {
     "@testing-library/dom": "^7.30.0",
+    "@testing-library/jest-dom": "^5.11.9",
     "@types/express": "^4.17.11",
     "@types/jest": "^26.0.20",
     "@types/lodash": "^4.14.168",
