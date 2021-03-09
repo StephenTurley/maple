@@ -52,7 +52,6 @@ const start = <model, msg>(
     state.next()
     const model = state.next(msg).value
     if (model !== undefined) {
-      // Todo figure out why model can be void
       render(root, view(model), onUpdate)
     }
   }

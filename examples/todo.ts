@@ -4,13 +4,17 @@ import { div, h1, li, text, ul, Html } from '../html'
 import { onClick } from '../html/events'
 import { classNames } from '../html/attributes'
 
+import { expectJson } from '../expect'
+
+import { JsonDecoder } from 'ts.data.json'
+
 // Msg
 
 type Msg = { type: 'toggle'; id: number } | { type: 'got-todos'; todos: Todo[] }
 
 // Model
 
-type Todo = {
+export type Todo = {
   id: number
   title: string
   complete: boolean
@@ -20,16 +24,27 @@ type Model = {
   todos: Todo[]
 }
 
+export const todosDecoder = JsonDecoder.array(
+  JsonDecoder.object<Todo>(
+    {
+      id: JsonDecoder.number,
+      title: JsonDecoder.string,
+      complete: JsonDecoder.boolean
+    },
+    'todo-decoder'
+  ),
+  'todos-decoder'
+)
+
 // init
 
 const init = (): [Model, Cmd<Msg>] => {
-  const todos: Todo[] = [
-    // { id: 1, title: 'Create Willow', complete: false },
-    // { id: 2, title: 'Tell folks to use Elm instead', complete: false }
-  ]
   return [
-    { todos: todos },
-    get('http://localhost:8888/todos', { type: 'got-todos', todos: [] })
+    { todos: [] },
+    get(
+      'http://localhost:8888/todos',
+      expectJson((todos) => ({ type: 'got-todos', todos: todos }), todosDecoder)
+    )
   ]
 }
 
