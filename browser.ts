@@ -1,5 +1,5 @@
 import { Html } from './html'
-import { Cmd, none } from './command'
+import { Cmd, none, processCommand } from './command'
 import render from './render'
 import * as _ from 'lodash'
 
@@ -28,14 +28,21 @@ declare global {
 
 type Program<model, msg> = Element<model, msg> | Sandbox<model, msg>
 
-function* stateGenerator<model, msg>(
+type StateUpdater<model, msg> = {
+  current: model
+  next: (msg: msg) => [model, Cmd<msg>]
+}
+const stateUpdater = <model, msg>(
   update: (msg: msg, model: model) => [model, Cmd<msg>],
   initial: model
-) {
-  let current: model = initial
-
-  while (true) {
-    yield (current = update(yield, current)[0])
+): StateUpdater<model, msg> => {
+  return {
+    current: initial,
+    next: function (msg: msg): [model, Cmd<msg>] {
+      const [model, cmd] = update(msg, this.current)
+      this.current = model
+      return [model, cmd]
+    }
   }
 }
 
@@ -45,12 +52,12 @@ const start = <model, msg>(
   update: (msg: msg, model: model) => [model, Cmd<msg>],
   view: (model: model) => Html<msg>
 ) => {
-  const state = stateGenerator(update, init)
+  const state = stateUpdater(update, init)
 
   const onUpdate = (msg: msg) => {
     root.innerHTML = ''
-    state.next()
-    const model = state.next(msg).value
+    const [model, cmd] = state.next(msg)
+    processCommand(cmd, state.next)
     if (model !== undefined) {
       render(root, view(model), onUpdate)
     }

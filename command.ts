@@ -19,4 +19,16 @@ const get = <msg, a>(url: string, expect: Expect<msg>): HttpCommand<msg> => ({
   expect
 })
 
+export const processCommand = <msg>(
+  cmd: Cmd<msg>,
+  callback: (msg: msg) => void
+) => {
+  switch (cmd.type) {
+    case 'none':
+      break
+    case 'http':
+      break
+  }
+}
+
 export { Cmd, None, HttpCommand, none, get }
