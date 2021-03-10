@@ -1,5 +1,5 @@
 import { Html } from './html'
-import { Cmd } from './command'
+import { Cmd, none } from './command'
 import render from './render'
 import * as _ from 'lodash'
 
@@ -29,20 +29,20 @@ declare global {
 type Program<model, msg> = Element<model, msg> | Sandbox<model, msg>
 
 function* stateGenerator<model, msg>(
-  update: (msg: msg, model: model) => model,
+  update: (msg: msg, model: model) => [model, Cmd<msg>],
   initial: model
 ) {
   let current: model = initial
 
   while (true) {
-    yield (current = update(yield, current))
+    yield (current = update(yield, current)[0])
   }
 }
 
 const start = <model, msg>(
   root: HTMLElement,
   init: model,
-  update: (msg: msg, model: model) => model,
+  update: (msg: msg, model: model) => [model, Cmd<msg>],
   view: (model: model) => Html<msg>
 ) => {
   const state = stateGenerator(update, init)
@@ -64,12 +64,7 @@ function element<model, msg>(p: Element<model, msg>) {
   window.Willow = {
     init: (root: HTMLElement, flags?: any) => {
       const init = p.init(flags)[0]
-
-      const updateModel = (msg: msg, model: model): model => {
-        return p.update(msg, model)[0]
-      }
-
-      start(root, init, updateModel, p.view)
+      start(root, init, p.update, p.view)
     }
   }
 }
@@ -77,7 +72,10 @@ function element<model, msg>(p: Element<model, msg>) {
 function sandbox<model, msg>(p: Sandbox<model, msg>) {
   window.Willow = {
     init: (root: HTMLElement) => {
-      start(root, p.init(), p.update, p.view)
+      const update = (msg: msg, model: model): [model, Cmd<msg>] => {
+        return [p.update(msg, model), none]
+      }
+      start(root, p.init(), update, p.view)
     }
   }
 }

@@ -3,9 +3,7 @@ import { Cmd, get, none } from '../command'
 import { div, h1, li, text, ul, Html } from '../html'
 import { onClick } from '../html/events'
 import { classNames } from '../html/attributes'
-
 import { expectJson } from '../expect'
-
 import { JsonDecoder } from 'ts.data.json'
 
 // Msg
