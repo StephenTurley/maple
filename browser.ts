@@ -1,7 +1,6 @@
 import { Html } from './html'
 import { Cmd, none, processCommand } from './command'
 import render from './render'
-import * as _ from 'lodash'
 
 type Sandbox<model, msg> = {
   init: () => model
@@ -48,30 +47,24 @@ const stateUpdater = <model, msg>(
 
 const start = <model, msg>(
   root: HTMLElement,
-  init: model,
+  init: [model, Cmd<msg>],
   update: (msg: msg, model: model) => [model, Cmd<msg>],
   view: (model: model) => Html<msg>
 ) => {
-  const state = stateUpdater(update, init)
+  const state = stateUpdater(update, init[0])
 
-  const onUpdate = (msg: msg) => {
+  const onUpdate = ([model, cmd]: [model, Cmd<msg>]) => {
     root.innerHTML = ''
-    const [model, cmd] = state.next(msg)
     processCommand(cmd, state.next)
-    if (model !== undefined) {
-      render(root, view(model), onUpdate)
-    }
+    render(root, view(model), (msg) => onUpdate(state.next(msg)))
   }
-
-  root.innerHTML = ''
-  render(root, view(init), onUpdate)
+  onUpdate(init)
 }
 
 function element<model, msg>(p: Element<model, msg>) {
   window.Willow = {
     init: (root: HTMLElement, flags?: any) => {
-      const init = p.init(flags)[0]
-      start(root, init, p.update, p.view)
+      start(root, p.init(flags), p.update, p.view)
     }
   }
 }
@@ -82,7 +75,7 @@ function sandbox<model, msg>(p: Sandbox<model, msg>) {
       const update = (msg: msg, model: model): [model, Cmd<msg>] => {
         return [p.update(msg, model), none]
       }
-      start(root, p.init(), update, p.view)
+      start(root, [p.init(), none], update, p.view)
     }
   }
 }

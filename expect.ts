@@ -2,7 +2,7 @@ import { JsonDecoder } from 'ts.data.json'
 
 export type Expect<msg> = {
   type: 'json'
-  toMsg: (a: any) => msg // TODO define type to handle error
+  toMsg: (a: any) => msg
   decoder: JsonDecoder.Decoder<any>
 }
 
