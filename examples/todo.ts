@@ -8,10 +8,7 @@ import { JsonDecoder } from 'ts.data.json'
 
 // Msg
 
-type Msg =
-  | { type: 'toggle'; id: number }
-  | { type: 'got-todos'; todos: Todo[] }
-  | { type: 'fetch-todos' }
+type Msg = { type: 'toggle'; id: number } | { type: 'got-todos'; todos: Todo[] }
 
 // Model
 
@@ -40,7 +37,13 @@ export const todosDecoder = JsonDecoder.array(
 // init
 
 const init = (): [Model, Cmd<Msg>] => {
-  return [{ todos: [] }, none]
+  return [
+    { todos: [] },
+    get(
+      'http://localhost:8888/todos',
+      expectJson((todos) => ({ type: 'got-todos', todos: todos }), todosDecoder)
+    )
+  ]
 }
 
 // update
@@ -51,17 +54,6 @@ const update = (msg: Msg, model: Model): [Model, Cmd<Msg>] => {
       return [{ ...model, todos: toggle(msg.id, model.todos) }, none]
     case 'got-todos':
       return [{ ...model, todos: msg.todos }, none]
-    case 'fetch-todos':
-      return [
-        model,
-        get(
-          'http://localhost:8888/todos',
-          expectJson(
-            (todos) => ({ type: 'got-todos', todos: todos }),
-            todosDecoder
-          )
-        )
-      ]
   }
 }
 
@@ -78,7 +70,6 @@ const view = (model: Model): Html<Msg> => {
     [],
     [
       h1([], [text('Todos!')]),
-      button([onClick({ type: 'fetch-todos' })], [text('get em')]),
       ul(
         [],
         model.todos.map((todo) =>

@@ -7,7 +7,7 @@ import { map, omit } from 'lodash/fp'
 
 describe('todos', () => {
   beforeEach(() => {
-    rest.get('/todos', (req, res, ctx) => {
+    rest.get('http://localhost:8888/todos', (req, res, ctx) => {
       return res(
         ctx.status(200),
         ctx.json([
