@@ -2,11 +2,12 @@ import TodoApp, { Todo, todosDecoder } from './todo'
 import { screen, waitFor } from '@testing-library/dom'
 import { render } from '../test-helper'
 import { rest } from 'msw'
+import { setupServer } from 'msw/node'
 import { Result, Ok } from 'ts.data.json'
 import { map, omit } from 'lodash/fp'
 
 describe('todos', () => {
-  beforeEach(() => {
+  const server = setupServer(
     rest.get('http://localhost:8888/todos', (req, res, ctx) => {
       return res(
         ctx.status(200),
@@ -16,6 +17,10 @@ describe('todos', () => {
         ])
       )
     })
+  )
+  beforeAll(() => server.listen())
+  afterAll(() => server.close())
+  beforeEach(() => {
     // TODO pass app to render function
     TodoApp
     render(window.Willow.init)
@@ -25,7 +30,7 @@ describe('todos', () => {
     expect(screen.getByRole('heading')).toHaveTextContent('Todos!')
   })
 
-  xit('should fetch the todos', async () => {
+  it('should fetch the todos', async () => {
     await waitFor(() => screen.getByText('The first thing'))
     await waitFor(() => screen.getByText('The second thing'))
   })
