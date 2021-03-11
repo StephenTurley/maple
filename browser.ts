@@ -1,6 +1,7 @@
 import { Html } from './html'
 import { Cmd, none, processCommand } from './command'
 import render from './render'
+import { flow } from 'lodash/fp'
 
 type Sandbox<model, msg> = {
   init: () => model
@@ -52,11 +53,12 @@ const start = <model, msg>(
   view: (model: model) => Html<msg>
 ) => {
   const state = stateUpdater(update, init[0])
+  const processMsg = state.next.bind(state)
 
   const onUpdate = ([model, cmd]: [model, Cmd<msg>]) => {
     root.innerHTML = ''
-    processCommand(cmd, state.next.bind(state))
-    render(root, view(model), (msg) => onUpdate(state.next(msg)))
+    processCommand(cmd, flow(processMsg, onUpdate))
+    render(root, view(model), flow(processMsg, onUpdate))
   }
   onUpdate(init)
 }
