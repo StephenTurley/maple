@@ -55,7 +55,7 @@ const start = <model, msg>(
 
   const onUpdate = ([model, cmd]: [model, Cmd<msg>]) => {
     root.innerHTML = ''
-    processCommand(cmd, state.next)
+    processCommand(cmd, state.next.bind(state))
     render(root, view(model), (msg) => onUpdate(state.next(msg)))
   }
   onUpdate(init)

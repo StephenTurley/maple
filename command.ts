@@ -27,7 +27,23 @@ export const processCommand = <msg>(
     case 'none':
       break
     case 'http':
-      break
+      fetch(cmd.url, {
+        mode: 'cors',
+        method: cmd.method,
+        headers: {
+          'content-type': 'application/json;charset=UTF-8',
+          Accept: 'application/json'
+        }
+      })
+        .then((res) => res.json())
+        .then((json) => {
+          const result = cmd.expect.decoder.decode(json)
+          if (result.isOk()) {
+            callback(cmd.expect.toMsg(result.value))
+          } else {
+            console.log('decoder failed', result)
+          }
+        })
   }
 }
 
