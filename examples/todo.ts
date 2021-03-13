@@ -40,7 +40,7 @@ const init = (): [Model, Cmd<Msg>] => {
   return [
     { todos: [] },
     get(
-      'http://localhost:8888/todos',
+      '/api/todos',
       expectJson((todos) => ({ type: 'got-todos', todos: todos }), todosDecoder)
     )
   ]
@@ -69,7 +69,7 @@ const view = (model: Model): Html<Msg> => {
   return div(
     [],
     [
-      h1([], [text('Todos!')]),
+      h1([], [text('Things to do')]),
       ul(
         [],
         model.todos.map((todo) =>
