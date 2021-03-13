@@ -69,7 +69,7 @@ const view = (model: Model): Html<Msg> => {
   return div(
     [],
     [
-      h1([], [text('Things to do')]),
+      h1([], [text('Todos!')]),
       ul(
         [],
         model.todos.map((todo) =>

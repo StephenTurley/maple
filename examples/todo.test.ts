@@ -8,7 +8,7 @@ import { map, omit } from 'lodash/fp'
 
 describe('todos', () => {
   const server = setupServer(
-    rest.get('http://localhost:8888/todos', (req, res, ctx) => {
+    rest.get('/api/todos', (req, res, ctx) => {
       return res(
         ctx.status(200),
         ctx.json([
