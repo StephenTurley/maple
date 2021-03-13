@@ -22,12 +22,12 @@ const get = <msg, a>(url: string, expect: Expect<msg>): HttpCommand<msg> => ({
 export const processCommand = <msg>(
   cmd: Cmd<msg>,
   callback: (msg: msg) => void
-) => {
+): Promise<any> => {
   switch (cmd.type) {
     case 'none':
-      break
+      return Promise.resolve()
     case 'http':
-      fetch(cmd.url, {
+      return fetch(cmd.url, {
         method: cmd.method,
         headers: {
           'content-type': 'application/json;charset=UTF-8',
