@@ -1,12 +1,7 @@
 import { Expect } from './expect'
+import { performHttp, HttpCommand } from './http'
 
 type None = { type: 'none' }
-type HttpCommand<msg> = {
-  type: 'http'
-  method: string
-  url: string
-  expect: Expect<msg>
-}
 
 type Cmd<msg> = None | HttpCommand<msg>
 
@@ -27,23 +22,7 @@ export const processCommand = <msg>(
     case 'none':
       return Promise.resolve()
     case 'http':
-      return fetch(cmd.url, {
-        method: cmd.method,
-        headers: {
-          'content-type': 'application/json;charset=UTF-8',
-          Accept: 'application/json'
-        }
-      })
-        .then((res) => res.json())
-        .then((json) => {
-          const result = cmd.expect.decoder.decode(json)
-          if (result.isOk()) {
-            callback(cmd.expect.toMsg({ type: 'success', value: result.value }))
-          } else {
-            console.error('decoder failed', result)
-          }
-        })
-        .catch((err) => console.error('error', err))
+      return performHttp(cmd, callback)
   }
 }
 
