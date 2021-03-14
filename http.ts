@@ -24,8 +24,9 @@ export const performHttp = <msg>(
       if (result.isOk()) {
         callback(cmd.expect.toMsg({ type: 'success', value: result.value }))
       } else {
+        // TODO this should send an error to the callback
         console.error('decoder failed', result)
       }
     })
-    .catch((err) => console.error('error', err))
+    .catch(() => callback(cmd.expect.toMsg({ type: 'error' })))
 }

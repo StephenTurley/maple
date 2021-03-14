@@ -3,14 +3,14 @@ import { Cmd, get, none } from '../command'
 import { button, div, h1, li, text, ul, Html } from '../html'
 import { onClick } from '../html/events'
 import { classNames } from '../html/attributes'
-import { expectJson } from '../expect'
+import { expectJson, Result } from '../expect'
 import { JsonDecoder } from 'ts.data.json'
 
 // Msg
 
 type Msg =
   | { type: 'toggle'; id: number }
-  | { type: 'got-todos'; result: { type: 'success'; value: Todo[] } }
+  | { type: 'got-todos'; result: Result<Todo[]> }
 
 // Model
 
@@ -44,10 +44,7 @@ const init = (): [Model, Cmd<Msg>] => {
     get(
       '/api/todos',
       expectJson(
-        (result: { type: 'success'; value: Todo[] }) => ({
-          type: 'got-todos',
-          result: result
-        }),
+        (result: Result<Todo[]>) => ({ type: 'got-todos', result: result }),
         todosDecoder
       )
     )
@@ -61,7 +58,12 @@ const update = (msg: Msg, model: Model): [Model, Cmd<Msg>] => {
     case 'toggle':
       return [{ ...model, todos: toggle(msg.id, model.todos) }, none]
     case 'got-todos':
-      return [{ ...model, todos: msg.result.value }, none]
+      switch (msg.result.type) {
+        case 'success':
+          return [{ ...model, todos: msg.result.value }, none]
+        case 'error':
+          return [model, none]
+      }
   }
 }
 
