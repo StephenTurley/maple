@@ -8,7 +8,9 @@ import { JsonDecoder } from 'ts.data.json'
 
 // Msg
 
-type Msg = { type: 'toggle'; id: number } | { type: 'got-todos'; todos: Todo[] }
+type Msg =
+  | { type: 'toggle'; id: number }
+  | { type: 'got-todos'; result: { type: 'success'; value: Todo[] } }
 
 // Model
 
@@ -41,7 +43,13 @@ const init = (): [Model, Cmd<Msg>] => {
     { todos: [] },
     get(
       '/api/todos',
-      expectJson((todos) => ({ type: 'got-todos', todos: todos }), todosDecoder)
+      expectJson(
+        (result: { type: 'success'; value: Todo[] }) => ({
+          type: 'got-todos',
+          result: result
+        }),
+        todosDecoder
+      )
     )
   ]
 }
@@ -53,7 +61,7 @@ const update = (msg: Msg, model: Model): [Model, Cmd<Msg>] => {
     case 'toggle':
       return [{ ...model, todos: toggle(msg.id, model.todos) }, none]
     case 'got-todos':
-      return [{ ...model, todos: msg.todos }, none]
+      return [{ ...model, todos: msg.result.value }, none]
   }
 }
 

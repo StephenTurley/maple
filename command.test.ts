@@ -16,10 +16,11 @@ describe('command', () => {
     afterAll(() => server.close())
 
     it('should get foo', async () => {
-      const msg = (arg: { foo: string }) => ({
+      const msg = (result: { type: 'success'; value: { foo: string } }) => ({
         type: 'got foo',
-        value: arg.foo
+        result: result
       })
+
       const decoder = JsonDecoder.object(
         { foo: JsonDecoder.string },
         'foo-decoder'
@@ -29,7 +30,10 @@ describe('command', () => {
 
       await processCommand(cmd, callback)
 
-      expect(callback).toHaveBeenCalledWith({ type: 'got foo', value: 'bar' })
+      expect(callback).toHaveBeenCalledWith({
+        type: 'got foo',
+        result: { type: 'success', value: { foo: 'bar' } }
+      })
     })
   })
 })

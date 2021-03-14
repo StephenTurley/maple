@@ -38,7 +38,7 @@ export const processCommand = <msg>(
         .then((json) => {
           const result = cmd.expect.decoder.decode(json)
           if (result.isOk()) {
-            callback(cmd.expect.toMsg(result.value))
+            callback(cmd.expect.toMsg({ type: 'success', value: result.value }))
           } else {
             console.error('decoder failed', result)
           }

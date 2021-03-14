@@ -7,7 +7,7 @@ export type Expect<msg> = {
 }
 
 export const expectJson = <msg, a>(
-  toMsg: (a: a) => msg,
+  toMsg: (a: { type: 'success'; value: a }) => msg,
   decoder: JsonDecoder.Decoder<a>
 ): Expect<msg> => {
   return { type: 'json', toMsg, decoder }
