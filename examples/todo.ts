@@ -1,6 +1,6 @@
 import { element } from '../browser'
 import { Cmd, get, none } from '../command'
-import { button, div, h1, li, text, ul, Html } from '../html'
+import { button, div, h1, li, p, text, ul, Html } from '../html'
 import { onClick } from '../html/events'
 import { classNames } from '../html/attributes'
 import { expectJson, Result } from '../expect'
@@ -20,9 +20,11 @@ export type Todo = {
   complete: boolean
 }
 
-type Model = {
-  todos: Todo[]
-}
+type Error = { state: 'error' }
+type Loaded = { state: 'loaded'; todos: Todo[] }
+type Loading = { state: 'loading' }
+
+type Model = Loading | Loaded | Error
 
 export const todosDecoder = JsonDecoder.array(
   JsonDecoder.object<Todo>(
@@ -40,7 +42,7 @@ export const todosDecoder = JsonDecoder.array(
 
 const init = (): [Model, Cmd<Msg>] => {
   return [
-    { todos: [] },
+    { state: 'loading' },
     get(
       '/api/todos',
       expectJson(
@@ -56,13 +58,17 @@ const init = (): [Model, Cmd<Msg>] => {
 const update = (msg: Msg, model: Model): [Model, Cmd<Msg>] => {
   switch (msg.type) {
     case 'toggle':
-      return [{ ...model, todos: toggle(msg.id, model.todos) }, none]
+      if (model.state === 'loaded') {
+        return [{ ...model, todos: toggle(msg.id, model.todos) }, none]
+      }
+      return [model, none]
+
     case 'got-todos':
       switch (msg.result.type) {
         case 'success':
-          return [{ ...model, todos: msg.result.value }, none]
+          return [{ state: 'loaded', todos: msg.result.value }, none]
         case 'error':
-          return [model, none]
+          return [{ state: 'error' }, none]
       }
   }
 }
@@ -76,25 +82,33 @@ const toggle = (id: number, todos: Todo[]): Todo[] => {
 // view
 
 const view = (model: Model): Html<Msg> => {
-  return div(
+  return div([], [h1([], [text('Todos!')]), viewState(model)])
+}
+
+const viewState = (model: Model): Html<Msg> => {
+  switch (model.state) {
+    case 'loading':
+      return p([], [text('loading...')])
+    case 'loaded':
+      return viewTodos(model)
+    case 'error':
+      return p([], [text('Error occurred')])
+  }
+}
+const viewTodos = (model: Loaded): Html<Msg> => {
+  return ul(
     [],
-    [
-      h1([], [text('Todos!')]),
-      ul(
-        [],
-        model.todos.map((todo) =>
-          li(
-            [
-              todo.complete
-                ? classNames('todo', 'todo-complete')
-                : classNames('todo'),
-              onClick({ type: 'toggle', id: todo.id })
-            ],
-            [text(todo.title)]
-          )
-        )
+    model.todos.map((todo) =>
+      li(
+        [
+          todo.complete
+            ? classNames('todo', 'todo-complete')
+            : classNames('todo'),
+          onClick({ type: 'toggle', id: todo.id })
+        ],
+        [text(todo.title)]
       )
-    ]
+    )
   )
 }
 

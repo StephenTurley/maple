@@ -11,4 +11,6 @@ export const render = (init: (el: HTMLElement) => void) => {
   } else {
     fail('did not render')
   }
+
+  return screen
 }

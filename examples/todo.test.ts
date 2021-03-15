@@ -1,5 +1,5 @@
 import TodoApp, { Todo, todosDecoder } from './todo'
-import { screen, waitFor } from '@testing-library/dom'
+import { waitFor } from '@testing-library/dom'
 import { render } from '../test-helper'
 import { rest } from 'msw'
 import { setupServer } from 'msw/node'
@@ -20,19 +20,38 @@ describe('todos', () => {
   )
   beforeAll(() => server.listen())
   afterAll(() => server.close())
-  beforeEach(() => {
+  const subject = () => {
     // TODO pass app to render function
     TodoApp
-    render(window.Willow.init)
+    return render(window.Willow.init)
+  }
+
+  describe('happy path', () => {
+    it('should initialize', () => {
+      const { getByRole, getByText } = subject()
+      getByText('loading...')
+      expect(getByRole('heading')).toHaveTextContent('Todos!')
+    })
+
+    it('should fetch the todos', async () => {
+      const { getByText } = subject()
+      await waitFor(() => getByText('The first thing'))
+      await waitFor(() => getByText('The second thing'))
+    })
   })
 
-  it('should have a heading', () => {
-    expect(screen.getByRole('heading')).toHaveTextContent('Todos!')
-  })
+  describe('errors', () => {
+    it('let the user know when something goes wrong', async () => {
+      server.use(
+        rest.get('/api/todos', (req, res, ctx) => {
+          return res(ctx.status(400))
+        })
+      )
 
-  it('should fetch the todos', async () => {
-    await waitFor(() => screen.getByText('The first thing'))
-    await waitFor(() => screen.getByText('The second thing'))
+      const { getByText } = subject()
+
+      await waitFor(() => getByText('Error occurred'))
+    })
   })
 
   describe('todosDecoder', () => {
