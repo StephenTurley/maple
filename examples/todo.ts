@@ -1,9 +1,9 @@
-import { element } from '../browser'
-import { Cmd, get, none } from '../command'
-import { button, div, h1, li, p, text, ul, Html } from '../html'
-import { onClick } from '../html/events'
-import { classNames } from '../html/attributes'
-import { expectJson, Result } from '../expect'
+import { element } from '../src/browser'
+import { Cmd, get, none } from '../src/command'
+import { button, div, h1, li, p, text, ul, Html } from '../src/html'
+import { onClick } from '../src/html/events'
+import { classNames } from '../src/html/attributes'
+import { expectJson, Result } from '../src/expect'
 import { JsonDecoder } from 'ts.data.json'
 
 // Msg
