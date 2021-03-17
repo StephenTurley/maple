@@ -13,6 +13,9 @@ describe('command', () => {
       }),
       rest.get('/bad_request', (req, res, ctx) => {
         return res(ctx.status(400))
+      }),
+      rest.get('/malformed_response', (req, res, ctx) => {
+        return res(ctx.status(200), ctx.json({ flerpn: 'bar' }))
       })
     )
     beforeAll(() => server.listen())
@@ -38,6 +41,17 @@ describe('command', () => {
 
     it('should return error on bad_request', async () => {
       const cmd = get('/bad_request', expectJson(msg, decoder))
+
+      await processCommand(cmd, callback)
+
+      expect(callback).toHaveBeenCalledWith({
+        type: 'got foo',
+        result: { type: 'error' }
+      })
+    })
+
+    it('should return error decoder fails', async () => {
+      const cmd = get('/malformed_response', expectJson(msg, decoder))
 
       await processCommand(cmd, callback)
 
