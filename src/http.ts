@@ -4,6 +4,7 @@ export type HttpCommand<msg> = {
   type: 'http'
   method: string
   url: string
+  body?: any
   expect: Expect<msg>
 }
 
@@ -13,6 +14,7 @@ export const performHttp = <msg>(
 ): Promise<any> => {
   return fetch(cmd.url, {
     method: cmd.method,
+    body: cmd.body,
     headers: {
       'content-type': 'application/json;charset=UTF-8',
       Accept: 'application/json'

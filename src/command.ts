@@ -14,6 +14,18 @@ const get = <msg, a>(url: string, expect: Expect<msg>): HttpCommand<msg> => ({
   expect
 })
 
+const put = <msg, a, b>(
+  url: string,
+  body: b,
+  expect: Expect<msg>
+): HttpCommand<msg> => ({
+  type: 'http',
+  method: 'PUT',
+  url,
+  body,
+  expect
+})
+
 export const processCommand = <msg>(
   cmd: Cmd<msg>,
   callback: (msg: msg) => void
@@ -26,4 +38,4 @@ export const processCommand = <msg>(
   }
 }
 
-export { Cmd, None, HttpCommand, none, get }
+export { Cmd, None, HttpCommand, none, get, put }
